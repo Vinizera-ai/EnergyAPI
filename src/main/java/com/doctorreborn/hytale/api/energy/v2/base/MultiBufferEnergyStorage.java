@@ -22,28 +22,32 @@
  * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  */
 
-package com.doctorreborn.hytale.api.energy.v1.base;
+package com.doctorreborn.hytale.api.energy.v2.base;
 
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.List;
 
 import org.jspecify.annotations.NonNull;
 
-import com.doctorreborn.hytale.api.energy.v1.EnergyStorageView;
+import com.doctorreborn.hytale.api.energy.v2.Energy;
+import com.shailist.hytale.api.transfer.v1.storage.base.CombinedSlottedStorage;
 import com.shailist.hytale.api.transfer.v1.transaction.TransactionContext;
 
-/**
- * An {@link ExtractionOnlyEnergyStorage} that supports extraction of an
- * infinite amount.
- */
-public final class InfiniteEnergyStorage implements ExtractionOnlyEnergyStorage {
-    @Override
-    public long extract(long maxAmount, TransactionContext transaction) {
-        return Long.MAX_VALUE;
+public class MultiBufferEnergyStorage extends CombinedSlottedStorage<Energy, SingleBufferEnergyStorage> {
+
+    public MultiBufferEnergyStorage(List<SingleBufferEnergyStorage> parts) {
+        super(parts);
+    }
+
+    public long insert(long maxAmount, @NonNull TransactionContext transaction) {
+        return insert(Energy.INSTANCE, maxAmount, transaction);
+    }
+
+    public long extract(long maxAmount, @NonNull TransactionContext transaction) {
+        return extract(Energy.INSTANCE, maxAmount, transaction);
     }
 
     @Override
-    public @NonNull Iterator<EnergyStorageView> iterator() {
-        return Collections.emptyIterator();
+    public String toString() {
+        return "MultiBufferEnergyStorage[" + parts + "]";
     }
 }

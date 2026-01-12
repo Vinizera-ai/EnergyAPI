@@ -26,7 +26,7 @@ package com.doctorreborn.hytale.api.energy.v1.base;
 
 import java.util.Iterator;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import com.doctorreborn.hytale.api.energy.v1.EnergyStorageView;
 import com.doctorreborn.hytale.api.energy.v1.SlottedEnergyStorage;
@@ -39,7 +39,7 @@ import com.shailist.hytale.impl.transfer.TransferApiImpl;
  */
 public interface SingleSlotEnergyStorage extends SlottedEnergyStorage, EnergyStorageView {
     @Override
-    default @NotNull Iterator<EnergyStorageView> iterator() {
+    default @NonNull Iterator<EnergyStorageView> iterator() {
         return TransferApiImpl.singletonIterator(this);
     }
 

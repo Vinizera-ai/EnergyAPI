@@ -27,9 +27,8 @@ package com.doctorreborn.hytale.api.energy.v1;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
-import java.util.function.Predicate;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import com.doctorreborn.hytale.api.energy.v1.base.SingleSlotEnergyStorage;
@@ -236,7 +235,7 @@ public final class EnergyStorageUtil {
      *         or {@code null} if none could be found.
      */
     public static long extractAny(@Nullable EnergyStorage storage, long maxAmount,
-            @NotNull TransactionContext transaction) {
+            @NonNull TransactionContext transaction) {
         StoragePreconditions.notNegative(maxAmount);
 
         if (storage == null)
@@ -275,7 +274,7 @@ public final class EnergyStorageUtil {
      * @see EnergyStorage#insert
      */
     public static long insertStacking(List<? extends SingleSlotEnergyStorage> slots, long maxAmount,
-            @NotNull TransactionContext transaction) {
+            @NonNull TransactionContext transaction) {
         StoragePreconditions.notNegative(maxAmount);
         long amount = 0;
 
@@ -320,7 +319,7 @@ public final class EnergyStorageUtil {
      *         inserted.
      */
     public static long tryInsertStacking(@Nullable EnergyStorage storage, long maxAmount,
-            @NotNull TransactionContext transaction) {
+            @NonNull TransactionContext transaction) {
         StoragePreconditions.notNegative(maxAmount);
 
         try {

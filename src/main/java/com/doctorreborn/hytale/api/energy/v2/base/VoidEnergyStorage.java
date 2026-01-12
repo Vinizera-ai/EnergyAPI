@@ -22,28 +22,31 @@
  * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  */
 
-package com.doctorreborn.hytale.api.energy.v1.base;
-
-import java.util.Collections;
-import java.util.Iterator;
+package com.doctorreborn.hytale.api.energy.v2.base;
 
 import org.jspecify.annotations.NonNull;
 
-import com.doctorreborn.hytale.api.energy.v1.EnergyStorageView;
+import com.doctorreborn.hytale.api.energy.v2.Energy;
+import com.shailist.hytale.api.transfer.v1.storage.base.InsertionOnlyStorage;
 import com.shailist.hytale.api.transfer.v1.transaction.TransactionContext;
 
-/**
- * An {@link ExtractionOnlyEnergyStorage} that supports extraction of an
- * infinite amount.
- */
-public final class InfiniteEnergyStorage implements ExtractionOnlyEnergyStorage {
+public class VoidEnergyStorage implements InsertionOnlyStorage<Energy> {
+
     @Override
-    public long extract(long maxAmount, TransactionContext transaction) {
-        return Long.MAX_VALUE;
+    public long insert(Energy resource, long maxAmount, @NonNull TransactionContext transaction) {
+        return maxAmount;
+    }
+
+    public long insert(long maxAmount, @NonNull TransactionContext transaction) {
+        return insert(Energy.INSTANCE, maxAmount, transaction);
+    }
+
+    public long getAmount() {
+        return 0;
     }
 
     @Override
-    public @NonNull Iterator<EnergyStorageView> iterator() {
-        return Collections.emptyIterator();
+    public String toString() {
+        return "VoidEnergyStorage[]";
     }
 }

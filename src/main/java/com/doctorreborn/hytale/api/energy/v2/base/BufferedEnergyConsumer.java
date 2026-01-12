@@ -22,28 +22,32 @@
  * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  */
 
-package com.doctorreborn.hytale.api.energy.v1.base;
+package com.doctorreborn.hytale.api.energy.v2.base;
 
-import java.util.Collections;
-import java.util.Iterator;
+import com.doctorreborn.hytale.api.energy.v2.Energy;
+import com.shailist.hytale.api.transfer.v1.storage.Storage;
+import com.shailist.hytale.api.transfer.v1.transaction.Transaction;
 
-import org.jspecify.annotations.NonNull;
+public class BufferedEnergyConsumer<T extends Storage<Energy>> extends BaseEnergyConsumer {
+    private long lastConsumed = 0;
+    private T storage;
 
-import com.doctorreborn.hytale.api.energy.v1.EnergyStorageView;
-import com.shailist.hytale.api.transfer.v1.transaction.TransactionContext;
-
-/**
- * An {@link ExtractionOnlyEnergyStorage} that supports extraction of an
- * infinite amount.
- */
-public final class InfiniteEnergyStorage implements ExtractionOnlyEnergyStorage {
-    @Override
-    public long extract(long maxAmount, TransactionContext transaction) {
-        return Long.MAX_VALUE;
+    public BufferedEnergyConsumer(T storage, long energyConsumption) {
+        super(energyConsumption);
+        this.storage = storage;
     }
 
     @Override
-    public @NonNull Iterator<EnergyStorageView> iterator() {
-        return Collections.emptyIterator();
+    public long getLastConsumed() {
+        return lastConsumed;
+    }
+
+    @Override
+    public long consume() {
+        try (Transaction transaction = Transaction.openOuter()) {
+            lastConsumed = storage.extract(Energy.INSTANCE, getEnergyConsumption(), transaction);
+            transaction.commit();
+        }
+        return lastConsumed;
     }
 }

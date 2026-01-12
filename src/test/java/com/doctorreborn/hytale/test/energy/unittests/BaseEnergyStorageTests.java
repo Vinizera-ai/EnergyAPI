@@ -25,19 +25,16 @@
 package com.doctorreborn.hytale.test.energy.unittests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Iterator;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 
-import com.doctorreborn.hytale.api.energy.v1.EnergyStorage;
-import com.doctorreborn.hytale.api.energy.v1.EnergyStorageUtil;
-import com.doctorreborn.hytale.api.energy.v1.EnergyStorageView;
-import com.doctorreborn.hytale.api.energy.v1.base.FilteringEnergyStorage;
-import com.doctorreborn.hytale.api.energy.v1.base.SingleBufferEnergyStorage;
+import com.doctorreborn.hytale.api.energy.v2.Energy;
+import com.doctorreborn.hytale.api.energy.v2.base.FilteringEnergyStorage;
+import com.doctorreborn.hytale.api.energy.v2.base.SingleBufferEnergyStorage;
 import com.doctorreborn.hytale.test.energy.unittests.utils.TestEnergyStorageUtil;
+import com.shailist.hytale.api.transfer.v1.storage.Storage;
+import com.shailist.hytale.api.transfer.v1.storage.StorageUtil;
 
 public class BaseEnergyStorageTests {
     @Test
@@ -51,8 +48,8 @@ public class BaseEnergyStorageTests {
         assertEquals(10L, TestEnergyStorageUtil.insert(storage, 10L));
         assertEquals(10L, storage.getAmount());
 
-        assertTrue(EnergyStorageUtil.findExtractableEnergy(storage, null));
-        assertEquals(10L, EnergyStorageUtil.findExtractableAmount(storage, null));
+        assertEquals(Energy.INSTANCE, StorageUtil.findExtractableResource(storage, null));
+        assertEquals(10L, StorageUtil.findExtractableContent(storage, null).amount());
 
         // Extraction from a non-empty storage should succeed.
         assertEquals(10L, TestEnergyStorageUtil.extract(storage, 10L));
@@ -62,22 +59,22 @@ public class BaseEnergyStorageTests {
         assertEquals(0L, TestEnergyStorageUtil.extract(storage, 10L));
         assertEquals(0L, storage.getAmount());
 
-        assertFalse(EnergyStorageUtil.findExtractableEnergy(storage, null));
-        assertEquals(0L, EnergyStorageUtil.findExtractableAmount(storage, null));
+        assertNull(StorageUtil.findExtractableResource(storage, null));
+        assertNull(StorageUtil.findExtractableContent(storage, null));
     }
 
     @Test
     public void testFilteringEnergyStorage() {
         SingleBufferEnergyStorage storage = new SingleBufferEnergyStorage(10L);
-        EnergyStorage noLessThanTen = new FilteringEnergyStorage(storage) {
+        Storage<Energy> noLessThanTen = new FilteringEnergyStorage(storage) {
             @Override
-            protected boolean canExtract(long amount) {
-                return amount >= 10L;
+            protected boolean canExtract(Energy resource, long amount) {
+                return canExtract(Energy.INSTANCE) && amount >= 10L;
             }
 
             @Override
-            protected boolean canInsert(long amount) {
-                return amount >= 10L;
+            protected boolean canInsert(Energy resource, long amount) {
+                return canInsert(Energy.INSTANCE) && amount >= 10L;
             }
         };
 
@@ -86,36 +83,15 @@ public class BaseEnergyStorageTests {
         // Inserting a filtered amount should succeed.
         assertEquals(10L, TestEnergyStorageUtil.insert(noLessThanTen, 10L));
 
-        assertTrue(EnergyStorageUtil.findExtractableEnergy(noLessThanTen, null));
-        assertEquals(10L, EnergyStorageUtil.findExtractableAmount(noLessThanTen, null));
+        assertEquals(Energy.INSTANCE, StorageUtil.findExtractableResource(noLessThanTen, null));
+        assertEquals(10L, StorageUtil.findExtractableContent(noLessThanTen, null).amount());
 
         // Extracting a non filtered amount should fail.
         assertEquals(0L, TestEnergyStorageUtil.extract(noLessThanTen, 5L));
         // Extracting filtered amount should succeed.
         assertEquals(10L, TestEnergyStorageUtil.extract(noLessThanTen, 10L));
 
-        assertFalse(EnergyStorageUtil.findExtractableEnergy(noLessThanTen, null));
-        assertEquals(0L, EnergyStorageUtil.findExtractableAmount(noLessThanTen, null));
-    }
-
-    /**
-     * Regression test for <a href="https://github.com/FabricMC/fabric/issues/3414">
-     * {@code nonEmptyIterator} not handling views that become empty during
-     * iteration correctly</a>.
-     */
-    @Test
-    public void testNonEmptyIteratorWithModifiedView() {
-        SingleBufferEnergyStorage storage = new SingleBufferEnergyStorage(10L);
-
-        Iterator<EnergyStorageView> iterator = storage.nonEmptyIterator();
-        TestEnergyStorageUtil.insert(storage, 10L);
-        // Iterator should have a next element now
-        assertTrue(iterator.hasNext());
-        assertEquals(storage, iterator.next());
-
-        iterator = storage.nonEmptyIterator();
-        TestEnergyStorageUtil.extract(storage, 10L);
-        // Iterator should not have a next element...
-        assertFalse(iterator.hasNext());
+        assertNull(StorageUtil.findExtractableResource(noLessThanTen, null));
+        assertNull(StorageUtil.findExtractableContent(noLessThanTen, null));
     }
 }

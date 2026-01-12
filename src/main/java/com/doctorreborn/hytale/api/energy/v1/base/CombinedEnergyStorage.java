@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.StringJoiner;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import com.doctorreborn.hytale.api.energy.v1.EnergyStorage;
 import com.doctorreborn.hytale.api.energy.v1.EnergyStorageView;
@@ -75,7 +75,7 @@ public class CombinedEnergyStorage<S extends EnergyStorage> implements EnergySto
     }
 
     @Override
-    public long insert(long maxAmount, @NotNull TransactionContext transaction) {
+    public long insert(long maxAmount, @NonNull TransactionContext transaction) {
         StoragePreconditions.notNegative(maxAmount);
         long amount = 0;
 
@@ -100,7 +100,7 @@ public class CombinedEnergyStorage<S extends EnergyStorage> implements EnergySto
     }
 
     @Override
-    public long extract(long maxAmount, @NotNull TransactionContext transaction) {
+    public long extract(long maxAmount, @NonNull TransactionContext transaction) {
         StoragePreconditions.notNegative(maxAmount);
         long amount = 0;
 
@@ -114,7 +114,7 @@ public class CombinedEnergyStorage<S extends EnergyStorage> implements EnergySto
     }
 
     @Override
-    public @NotNull Iterator<EnergyStorageView> iterator() {
+    public @NonNull Iterator<EnergyStorageView> iterator() {
         return new CombinedIterator();
     }
 

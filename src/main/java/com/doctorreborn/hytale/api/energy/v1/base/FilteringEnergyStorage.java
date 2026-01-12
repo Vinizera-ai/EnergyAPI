@@ -27,7 +27,7 @@ package com.doctorreborn.hytale.api.energy.v1.base;
 import java.util.Iterator;
 import java.util.function.Supplier;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import com.doctorreborn.hytale.api.energy.v1.EnergyStorage;
 import com.doctorreborn.hytale.api.energy.v1.EnergyStorageView;
@@ -199,7 +199,7 @@ public abstract class FilteringEnergyStorage implements EnergyStorage {
     }
 
     @Override
-    public long insert(long maxAmount, @NotNull TransactionContext transaction) {
+    public long insert(long maxAmount, @NonNull TransactionContext transaction) {
         if (canInsert(maxAmount)) {
             return backingStorage.get().insert(maxAmount, transaction);
         } else {
@@ -213,7 +213,7 @@ public abstract class FilteringEnergyStorage implements EnergyStorage {
     }
 
     @Override
-    public long extract(long maxAmount, @NotNull TransactionContext transaction) {
+    public long extract(long maxAmount, @NonNull TransactionContext transaction) {
         if (canExtract(maxAmount)) {
             return backingStorage.get().extract(maxAmount, transaction);
         } else {
@@ -222,7 +222,7 @@ public abstract class FilteringEnergyStorage implements EnergyStorage {
     }
 
     @Override
-    public @NotNull Iterator<EnergyStorageView> iterator() {
+    public @NonNull Iterator<EnergyStorageView> iterator() {
         return Iterators.transform(backingStorage.get().iterator(), FilteringEnergyStorageView::new);
     }
 
@@ -248,7 +248,7 @@ public abstract class FilteringEnergyStorage implements EnergyStorage {
         }
 
         @Override
-        public long extract(long maxAmount, @NotNull TransactionContext transaction) {
+        public long extract(long maxAmount, @NonNull TransactionContext transaction) {
             if (canExtract(maxAmount)) {
                 return backingView.extract(maxAmount, transaction);
             } else {

@@ -26,7 +26,7 @@ package com.doctorreborn.hytale.api.energy.v1;
 
 import java.util.Iterator;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import com.doctorreborn.hytale.impl.energy.EnergyApiImpl;
 import com.google.common.collect.Iterators;
@@ -172,7 +172,7 @@ public interface EnergyStorage extends Iterable<EnergyStorageView> {
      *         iterator is not allowed.
      */
     @Override
-    @NotNull
+    @NonNull
     Iterator<EnergyStorageView> iterator();
 
     /**

@@ -22,38 +22,37 @@
  * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  */
 
-package com.doctorreborn.hytale.api.energy.v1.base;
+package com.doctorreborn.hytale.api.energy.v2.base;
 
+import org.jspecify.annotations.NonNull;
+
+import com.doctorreborn.hytale.api.energy.v2.Energy;
 import com.shailist.hytale.api.transfer.v1.storage.StoragePreconditions;
+import com.shailist.hytale.api.transfer.v1.storage.base.ResourceAmount;
+import com.shailist.hytale.api.transfer.v1.storage.base.SingleSlotStorage;
 import com.shailist.hytale.api.transfer.v1.transaction.TransactionContext;
 import com.shailist.hytale.api.transfer.v1.transaction.base.SnapshotParticipant;
 
-/**
- * A storage that can store a single energy buffer.
- * Implementors should at least override {@link #getCapacity()},
- * and probably {@link #onFinalCommit()} as well for {@code setChanged()} and
- * similar calls.
- */
-public class SingleBufferEnergyStorage extends SnapshotParticipant<Long> implements SingleSlotEnergyStorage {
-    protected long amount = 0;
+public class SingleBufferEnergyStorage extends SnapshotParticipant<ResourceAmount<Energy>>
+        implements SingleSlotStorage<Energy> {
+    protected long amount;
     protected long capacity;
 
     public SingleBufferEnergyStorage(long capacity) {
+        this(capacity, 0);
+    }
+
+    protected SingleBufferEnergyStorage(long capacity, long amount) {
         this.capacity = capacity;
+        this.amount = amount;
+    }
+
+    public SingleBufferEnergyStorage copy() {
+        return new SingleBufferEnergyStorage(capacity, amount);
     }
 
     @Override
-    public long getAmount() {
-        return amount;
-    }
-
-    @Override
-    public long getCapacity() {
-        return capacity;
-    }
-
-    @Override
-    public long insert(long maxAmount, TransactionContext transaction) {
+    public long insert(Energy resource, long maxAmount, @NonNull TransactionContext transaction) {
         StoragePreconditions.notNegative(maxAmount);
 
         long inserted = Math.min(maxAmount, getCapacity() - amount);
@@ -67,8 +66,12 @@ public class SingleBufferEnergyStorage extends SnapshotParticipant<Long> impleme
         return 0;
     }
 
+    public long insert(long maxAmount, @NonNull TransactionContext transaction) {
+        return insert(Energy.INSTANCE, maxAmount, transaction);
+    }
+
     @Override
-    public long extract(long maxAmount, TransactionContext transaction) {
+    public long extract(Energy resource, long maxAmount, @NonNull TransactionContext transaction) {
         StoragePreconditions.notNegative(maxAmount);
 
         long extracted = Math.min(amount, maxAmount);
@@ -82,14 +85,38 @@ public class SingleBufferEnergyStorage extends SnapshotParticipant<Long> impleme
         return 0;
     }
 
+    public long extract(long maxAmount, @NonNull TransactionContext transaction) {
+        return extract(Energy.INSTANCE, maxAmount, transaction);
+    }
+
     @Override
-    protected Long createSnapshot() {
+    public boolean isResourceBlank() {
+        return false;
+    }
+
+    @Override
+    public Energy getResource() {
+        return Energy.INSTANCE;
+    }
+
+    @Override
+    public long getAmount() {
         return amount;
     }
 
     @Override
-    protected void readSnapshot(Long snapshot) {
-        amount = snapshot;
+    public long getCapacity() {
+        return capacity;
+    }
+
+    @Override
+    protected ResourceAmount<Energy> createSnapshot() {
+        return new ResourceAmount<>(Energy.INSTANCE, amount);
+    }
+
+    @Override
+    protected void readSnapshot(ResourceAmount<Energy> snapshot) {
+        amount = snapshot.amount();
     }
 
     @Override

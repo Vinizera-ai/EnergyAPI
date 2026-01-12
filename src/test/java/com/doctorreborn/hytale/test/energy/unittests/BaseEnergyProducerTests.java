@@ -23,15 +23,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import com.doctorreborn.hytale.api.energy.v1.base.SingleBufferEnergyStorage;
-import com.doctorreborn.hytale.api.energy.v1.base.SingleBufferEnergyProducer;
+import com.doctorreborn.hytale.api.energy.v2.base.SingleBufferEnergyStorage;
+import com.doctorreborn.hytale.api.energy.v2.base.BufferedEnergyProducer;
 import com.doctorreborn.hytale.test.energy.unittests.utils.TestEnergyStorageUtil;
 
 public class BaseEnergyProducerTests {
     @Test
     public void testSingleBufferEnergyProducer() {
         SingleBufferEnergyStorage storage = new SingleBufferEnergyStorage(10L);
-        SingleBufferEnergyProducer producer = new SingleBufferEnergyProducer(storage, 5L);
+        BufferedEnergyProducer<SingleBufferEnergyStorage> producer = new BufferedEnergyProducer<>(storage, 5L);
 
         assertEquals(0L, storage.getAmount());
         assertEquals(10L, storage.getCapacity());

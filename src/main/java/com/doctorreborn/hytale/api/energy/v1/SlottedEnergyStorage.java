@@ -26,8 +26,6 @@ package com.doctorreborn.hytale.api.energy.v1;
 
 import java.util.List;
 
-import org.jetbrains.annotations.UnmodifiableView;
-
 import com.doctorreborn.hytale.api.energy.v1.base.SingleSlotEnergyStorage;
 import com.doctorreborn.hytale.impl.energy.EnergyApiImpl;
 
@@ -73,7 +71,6 @@ public interface SlottedEnergyStorage extends EnergyStorage {
      *
      * @return An unmodifiable view over all the slots in this storage.
      */
-    @UnmodifiableView
     default List<SingleSlotEnergyStorage> getSlots() {
         return EnergyApiImpl.makeListView(this);
     }

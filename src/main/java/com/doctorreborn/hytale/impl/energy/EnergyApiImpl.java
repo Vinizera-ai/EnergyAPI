@@ -30,9 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jspecify.annotations.NonNull;
 
 import com.doctorreborn.hytale.api.energy.v1.EnergyStorage;
 import com.doctorreborn.hytale.api.energy.v1.EnergyStorageView;
@@ -41,8 +39,6 @@ import com.doctorreborn.hytale.api.energy.v1.base.SingleSlotEnergyStorage;
 import com.shailist.hytale.api.transfer.v1.transaction.TransactionContext;
 
 public class EnergyApiImpl {
-    /** Logger for energy API implementation internals. */
-    public static final Logger LOGGER = LoggerFactory.getLogger("energy-api-v1");
     /** Monotonic version counter used by internal storages. */
     public static final AtomicLong version = new AtomicLong();
 
@@ -57,7 +53,7 @@ public class EnergyApiImpl {
         }
 
         @Override
-        public long insert(long maxAmount, @NotNull TransactionContext transaction) {
+        public long insert(long maxAmount, @NonNull TransactionContext transaction) {
             return 0;
         }
 
@@ -67,12 +63,12 @@ public class EnergyApiImpl {
         }
 
         @Override
-        public long extract(long maxAmount, @NotNull TransactionContext transaction) {
+        public long extract(long maxAmount, @NonNull TransactionContext transaction) {
             return 0;
         }
 
         @Override
-        public @NotNull Iterator<EnergyStorageView> iterator() {
+        public @NonNull Iterator<EnergyStorageView> iterator() {
             return Collections.emptyIterator();
         }
 

@@ -24,7 +24,7 @@
 
 package com.doctorreborn.hytale.api.energy.v1;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import com.shailist.hytale.api.transfer.v1.transaction.TransactionContext;
 
@@ -40,7 +40,7 @@ public interface EnergyStorageView {
      * @param transaction The transaction this operation is part of.
      * @return The amount that was extracted.
      */
-    long extract(long maxAmount, @NotNull TransactionContext transaction);
+    long extract(long maxAmount, @NonNull TransactionContext transaction);
 
     /**
      * Return the amount of energy stored in this view.

@@ -17,22 +17,22 @@
  * along with Energy API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.doctorreborn.hytale.api.energy.v1.base;
+package com.doctorreborn.hytale.api.energy.v2.base;
 
-import com.doctorreborn.hytale.api.energy.v1.EnergyProducer;
-import com.shailist.hytale.api.transfer.v1.storage.StoragePreconditions;
+import com.doctorreborn.hytale.api.energy.v2.EnergyTransferer;
+import com.doctorreborn.hytale.api.energy.v2.EnergyPreconditions;
 
-public abstract class BaseEnergyProducer implements EnergyProducer {
-    private long energyProduction;
+public class BaseEnergyTransferer implements EnergyTransferer {
+    private long transferRate;
 
-    protected BaseEnergyProducer(long energyProduction) {
-        StoragePreconditions.notNegative(energyProduction);
+    public BaseEnergyTransferer(long transferRate) {
+        EnergyPreconditions.notNegative(transferRate);
 
-        this.energyProduction = energyProduction;
+        this.transferRate = transferRate;
     }
 
     @Override
-    public long getEnergyProduction() {
-        return energyProduction;
+    public long getTransferRate() {
+        return transferRate;
     }
 }

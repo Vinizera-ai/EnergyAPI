@@ -27,7 +27,7 @@ package com.doctorreborn.hytale.api.energy.v1.base;
 import java.util.Collections;
 import java.util.Iterator;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import com.doctorreborn.hytale.api.energy.v1.EnergyStorage;
 import com.doctorreborn.hytale.api.energy.v1.EnergyStorageView;
@@ -44,12 +44,12 @@ public interface InsertionOnlyEnergyStorage extends EnergyStorage {
     }
 
     @Override
-    default long extract(long maxAmount, @NotNull TransactionContext transaction) {
+    default long extract(long maxAmount, @NonNull TransactionContext transaction) {
         return 0;
     }
 
     @Override
-    default @NotNull Iterator<EnergyStorageView> iterator() {
+    default @NonNull Iterator<EnergyStorageView> iterator() {
         return Collections.emptyIterator();
     }
 }

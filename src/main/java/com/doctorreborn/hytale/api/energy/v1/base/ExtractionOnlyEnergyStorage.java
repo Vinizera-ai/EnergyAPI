@@ -24,7 +24,7 @@
 
 package com.doctorreborn.hytale.api.energy.v1.base;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import com.doctorreborn.hytale.api.energy.v1.EnergyStorage;
 import com.shailist.hytale.api.transfer.v1.transaction.TransactionContext;
@@ -39,7 +39,7 @@ public interface ExtractionOnlyEnergyStorage extends EnergyStorage {
     }
 
     @Override
-    default long insert(long maxAmount, @NotNull TransactionContext transaction) {
+    default long insert(long maxAmount, @NonNull TransactionContext transaction) {
         return 0;
     }
 }
