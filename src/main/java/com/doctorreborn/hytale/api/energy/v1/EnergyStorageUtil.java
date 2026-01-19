@@ -32,6 +32,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import com.doctorreborn.hytale.api.energy.v1.base.SingleSlotEnergyStorage;
+import com.doctorreborn.hytale.api.energy.v1.crash.CrashReport;
+import com.doctorreborn.hytale.api.energy.v1.crash.ReportedException;
 import com.shailist.hytale.api.transfer.v1.storage.StoragePreconditions;
 import com.shailist.hytale.api.transfer.v1.transaction.Transaction;
 import com.shailist.hytale.api.transfer.v1.transaction.TransactionContext;
@@ -43,7 +45,6 @@ import com.shailist.hytale.api.transfer.v1.transaction.TransactionContext;
  * Note that the functions that take a predicate iterate over the entire
  * inventory in the worst case.
  */
-@SuppressWarnings("CaughtExceptionImmediatelyRethrown") // TODO: Remove when implementing Crash Reporting
 public final class EnergyStorageUtil {
     private EnergyStorageUtil() {
     }
@@ -123,17 +124,14 @@ public final class EnergyStorageUtil {
 
             iterationTransaction.commit();
         } catch (Exception e) {
-            // TODO: Crash Reporting
-            // CrashReport report = CrashReport.forThrowable(e, "Moving energy between
-            // storages");
-            // report.addCategory("Move details")
-            // .setDetail("Input storage", from::toString)
-            // .setDetail("Output storage", to::toString)
-            // .setDetail("Filter", filter::toString)
-            // .setDetail("Max amount", maxAmount)
-            // .setDetail("Transaction", transaction);
-            // throw new ReportedException(report);
-            throw e;
+            CrashReport report = CrashReport.forThrowable(e, "Energy move failure");
+            report.addCategory("Energy move details")
+                    .setDetail("Input storage", from::toString)
+                    .setDetail("Output storage", to::toString)
+                    .setDetail("Filter", filter::toString)
+                    .setDetail("Max amount", maxAmount)
+                    .setDetail("Transaction", transaction);
+            throw new ReportedException(report);
         }
 
         return totalMoved;
@@ -248,15 +246,12 @@ public final class EnergyStorageUtil {
                     return amount;
             }
         } catch (Exception e) {
-            // TODO: Crash Reporting
-            // CrashReport report = CrashReport.forThrowable(e, "Extracting energy from
-            // storage");
-            // report.addCategory("Extraction details")
-            // .setDetail("Storage", storage::toString)
-            // .setDetail("Max amount", maxAmount)
-            // .setDetail("Transaction", transaction);
-            // throw new ReportedException(report);
-            throw e;
+            CrashReport report = CrashReport.forThrowable(e, "Energy extraction failure");
+            report.addCategory("Energy extraction details")
+                    .setDetail("Storage", () -> Objects.toString(storage, null))
+                    .setDetail("Max amount", maxAmount)
+                    .setDetail("Transaction", transaction);
+            throw new ReportedException(report);
         }
 
         return 0;
@@ -293,15 +288,12 @@ public final class EnergyStorageUtil {
                     return amount;
             }
         } catch (Exception e) {
-            // TODO: Crash Reporting
-            // CrashReport report = CrashReport.forThrowable(e, "Inserting energy into
-            // slots");
-            // report.addCategory("Slotted insertion details")
-            // .setDetail("Slots", () -> Objects.toString(slots, null))
-            // .setDetail("Max amount", maxAmount)
-            // .setDetail("Transaction", transaction);
-            // throw new ReportedException(report);
-            throw e;
+            CrashReport report = CrashReport.forThrowable(e, "Energy slot insertion failure");
+            report.addCategory("Energy slot insertion details")
+                    .setDetail("Slots", () -> Objects.toString(slots, null))
+                    .setDetail("Max amount", maxAmount)
+                    .setDetail("Transaction", transaction);
+            throw new ReportedException(report);
         }
 
         return amount;
@@ -331,15 +323,12 @@ public final class EnergyStorageUtil {
                 return 0;
             }
         } catch (Exception e) {
-            // TODO: Crash Reporting
-            // CrashReport report = CrashReport.forThrowable(e, "Inserting energy into a
-            // storage");
-            // report.addCategory("Insertion details")
-            // .setDetail("Storage", () -> Objects.toString(storage, null))
-            // .setDetail("Max amount", maxAmount)
-            // .setDetail("Transaction", transaction);
-            // throw new ReportedException(report);
-            throw e;
+            CrashReport report = CrashReport.forThrowable(e, "Energy insertion failure");
+            report.addCategory("Energy insertion details")
+                    .setDetail("Storage", () -> Objects.toString(storage, null))
+                    .setDetail("Max amount", maxAmount)
+                    .setDetail("Transaction", transaction);
+            throw new ReportedException(report);
         }
     }
 
